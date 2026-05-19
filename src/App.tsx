@@ -6,7 +6,7 @@ function App() {
   return (
     <div className="app-container">
       <header className="app-header">
-        <h1>My Link Directory</h1>
+        <h1>Intat Hub</h1>
         <p>A curated list of useful resources. Click any item to open in a new tab.</p>
       </header>
       <main className="link-grid">

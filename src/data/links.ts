@@ -3,32 +3,26 @@ import { LinkItem } from '../types';
 export const links: LinkItem[] = [
   {
     id: '1',
-    title: 'Google',
-    url: 'https://www.google.com',
-    description: 'The world\'s most popular search engine.'
+    title: 'Harn-Tang',
+    url: 'https://intatlikit.github.io/harn-tang/',
+    description: 'A useful tool for bill splitting and shared expenses.'
   },
   {
     id: '2',
-    title: 'GitHub',
-    url: 'https://github.com',
-    description: 'Where the world builds software.'
+    title: 'Monthly Expense Calculator',
+    url: 'https://intatlikit.github.io/monthly_expense_calculator/',
+    description: 'Track and manage your monthly spending habits.'
   },
   {
     id: '3',
-    title: 'Stack Overflow',
-    url: 'https://stackoverflow.com',
-    description: 'The largest online community for programmers.'
+    title: 'Loan Calculator',
+    url: 'https://intatlikit.github.io/loan-calculator/',
+    description: 'Calculate your loan payments and interest easily.'
   },
   {
     id: '4',
-    title: 'React Documentation',
-    url: 'https://react.dev',
-    description: 'Official documentation for React.'
-  },
-  {
-    id: '5',
-    title: 'Vite Documentation',
-    url: 'https://vitejs.dev',
-    description: 'Next generation frontend tooling.'
+    title: 'Saving Account Plan Calculator',
+    url: 'https://intatlikit.github.io/saving_account_plan_calculator/',
+    description: 'Plan your savings and visualize your financial growth.'
   }
 ];
