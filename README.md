@@ -1,42 +1,56 @@
-# Intat Hub
+# Intat's Hub
 
-A curated, accessible link directory built with React, Vite, and TypeScript. Live at [https://intatlikit.github.io/web-link-list/](https://intatlikit.github.io/web-link-list/).
+A professional, curated link directory of personal tools and calculators. Built with **React**, **Vite**, and **TypeScript**.
 
-## Features
-- **Accessible Links:** Uses standard `<a>` tags with `noopener noreferrer` for security and SEO.
-- **External Indicators:** Visual cues (↗) for links opening in new browser tabs.
-- **Responsive Layout:** A perfectly centered, mobile-friendly grid system.
-- **Automated Quality Gate:** Integrated Git pre-push hooks to ensure code integrity.
-- **CI/CD:** Automatic deployment to GitHub Pages via GitHub Actions.
+Live at: [https://intatlikit.github.io/web-link-list/](https://intatlikit.github.io/web-link-list/)
 
-## Development Routine
+## 🚀 Key Features
 
-### 1. Local Development
+- **Personalized Branding:** Custom identity as "Intat's Hub".
+- **Accessible & SEO-Friendly:** Uses semantic HTML (`<a>` tags) with proper security attributes (`noopener noreferrer`).
+- **Interactive UI:** A centered, responsive grid with hover effects and external link indicators (↗).
+- **Automated Workflow:**
+  - **Git Pre-Push Hook:** Prevents pushing code with linting or type errors.
+  - **GitHub Actions CI/CD:** Automatically builds and deploys to GitHub Pages on every push to `main`.
+
+## 🛠 Project Structure
+
+- `src/data/links.ts`: The source of truth for all links and descriptions.
+- `src/components/LinkCard.tsx`: The reusable card component for link items.
+- `src/App.tsx`: Main application shell and layout.
+- `.github/workflows/deploy.yml`: Configuration for automated deployments.
+
+## 📋 Development Routines
+
+### Local Development
 ```bash
 npm install
 npm run dev
 ```
-Start the development server with Hot Module Replacement (HMR) at [http://localhost:5173](http://localhost:5173).
+Starts the development server at [http://localhost:5173](http://localhost:5173) with Hot Module Replacement (HMR).
 
-### 2. Quality Checks
+### Quality Assurance (Auto-checked on Push)
 ```bash
 npm run check
 ```
-Runs **ESLint** and **TypeScript** validation. This is also automatically triggered during `git push`.
+Runs **ESLint** and **TypeScript** validation to ensure code health.
 
-### 3. Production Preview
+### Production Preview
 ```bash
 npm run preview:prod
 ```
-Builds the project and serves the production-ready minified files locally.
+Builds the production assets and serves them locally for final verification.
 
-## Deployment Routine
-This project uses **GitHub Actions** for continuous deployment.
-1. Any push to the `main` branch triggers the `Deploy static content to Pages` workflow.
-2. The workflow installs dependencies, builds the project, and deploys the `dist/` folder to GitHub Pages.
+## 🔗 Integrated Tools
 
-## Project Structure
-- `src/components/LinkCard.tsx`: Reusable card component with external link styling.
-- `src/data/links.ts`: Centralized data file for managing your links and descriptions.
-- `.github/workflows/deploy.yml`: GitHub Actions configuration for automated deployment.
-- `.git/hooks/pre-push`: Local hook to prevent pushing broken code.
+Currently featured in the hub:
+1. **Harn-Tang**: Bill splitting and shared expenses tool.
+2. **Monthly Expense Calculator**: Personal finance tracker.
+3. **Loan Calculator**: Interest and payment breakdown.
+4. **Saving Account Plan Calculator**: Financial goal visualization.
+
+## 📦 Deployment Details
+This project is configured to use **GitHub Actions** for deployment. To enable it:
+1. Go to **Settings > Pages** in your GitHub repository.
+2. Under **Build and deployment > Source**, select **GitHub Actions**.
+3. Pushing to the `main` branch will now automatically update the live site.
