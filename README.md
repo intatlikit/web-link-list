@@ -1,33 +1,42 @@
-# Web Link List
+# Intat Hub
 
-A curated, accessible link directory built with React, Vite, and TypeScript.
+A curated, accessible link directory built with React, Vite, and TypeScript. Live at [https://intatlikit.github.io/web-link-list/](https://intatlikit.github.io/web-link-list/).
 
 ## Features
-- **Accessible Links:** Uses standard `<a>` tags for better SEO and screen reader support.
-- **External Indicators:** Visual cues (↗) for links opening in new tabs.
-- **Responsive Grid:** Clean layout that works on mobile and desktop.
-- **Dev Routines:** Integrated linting and type-checking scripts.
+- **Accessible Links:** Uses standard `<a>` tags with `noopener noreferrer` for security and SEO.
+- **External Indicators:** Visual cues (↗) for links opening in new browser tabs.
+- **Responsive Layout:** A perfectly centered, mobile-friendly grid system.
+- **Automated Quality Gate:** Integrated Git pre-push hooks to ensure code integrity.
+- **CI/CD:** Automatic deployment to GitHub Pages via GitHub Actions.
 
-## Getting Started
+## Development Routine
 
-### Development
+### 1. Local Development
 ```bash
 npm install
 npm run dev
 ```
-Open [http://localhost:5173](http://localhost:5173) in your browser.
+Start the development server with Hot Module Replacement (HMR) at [http://localhost:5173](http://localhost:5173).
 
-### Quality Checks
+### 2. Quality Checks
 ```bash
 npm run check
 ```
+Runs **ESLint** and **TypeScript** validation. This is also automatically triggered during `git push`.
 
-### Production Build
+### 3. Production Preview
 ```bash
-npm run build
+npm run preview:prod
 ```
+Builds the project and serves the production-ready minified files locally.
+
+## Deployment Routine
+This project uses **GitHub Actions** for continuous deployment.
+1. Any push to the `main` branch triggers the `Deploy static content to Pages` workflow.
+2. The workflow installs dependencies, builds the project, and deploys the `dist/` folder to GitHub Pages.
 
 ## Project Structure
-- `src/components/LinkCard.tsx`: The reusable card component.
-- `src/data/links.ts`: Centralized data store for your links.
-- `src/types.ts`: TypeScript interfaces.
+- `src/components/LinkCard.tsx`: Reusable card component with external link styling.
+- `src/data/links.ts`: Centralized data file for managing your links and descriptions.
+- `.github/workflows/deploy.yml`: GitHub Actions configuration for automated deployment.
+- `.git/hooks/pre-push`: Local hook to prevent pushing broken code.
