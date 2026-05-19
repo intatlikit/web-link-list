@@ -50,3 +50,23 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Send mail
+        if: success()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{secrets.MAIL_USERNAME}}
+          password: ${{secrets.MAIL_PASSWORD}}
+          subject: Deployment Successful - ${{github.repository}}
+          to: intat.likit@gmail.com
+          from: GitHub Actions
+          body: |
+            The latest version of ${{github.repository}} has been successfully deployed to GitHub Pages.
+            
+            View the site at: ${{ steps.deployment.outputs.page_url }}
+            
+            Commit: ${{ github.sha }}
+            Branch: ${{ github.ref_name }}
