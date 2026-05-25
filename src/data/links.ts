@@ -21,6 +21,12 @@ export const links: LinkItem[] = [
   },
   {
     id: '4',
+    title: 'Text Converter',
+    url: 'https://text-converter-bice-five.vercel.app/',
+    description: 'A simple and efficient text converter tool.'
+  },
+  {
+    id: '5',
     title: 'Saving Account Plan Calculator',
     url: 'https://intatlikit.github.io/saving_account_plan_calculator/',
     description: 'Plan your savings and visualize your financial growth.'

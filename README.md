@@ -47,7 +47,8 @@ Currently featured in the hub:
 1. **Harn-Tang**: Bill splitting and shared expenses tool.
 2. **Monthly Expense Calculator**: Personal finance tracker.
 3. **Loan Calculator**: Interest and payment breakdown.
-4. **Saving Account Plan Calculator**: Financial goal visualization.
+4. **Text Converter**: Simple and efficient text conversion utility.
+5. **Saving Account Plan Calculator**: Financial goal visualization.
 
 ## 📦 Deployment Details
 This project is configured to use **GitHub Actions** for deployment. To enable it:
