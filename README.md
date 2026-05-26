@@ -49,6 +49,8 @@ Currently featured in the hub:
 3. **Loan Calculator**: Interest and payment breakdown.
 4. **Text Converter**: Simple and efficient text conversion utility.
 5. **Saving Account Plan Calculator**: Financial goal visualization.
+6. **Android Chucker View**: Web-based viewer for Android Chucker HTTP inspector logs.
+7. **iOS Pulse View**: API log inspector and viewer for iOS Pulse console logs.
 
 ## 📦 Deployment Details
 This project is configured to use **GitHub Actions** for deployment. To enable it:
