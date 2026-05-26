@@ -30,5 +30,17 @@ export const links: LinkItem[] = [
     title: 'Saving Account Plan Calculator',
     url: 'https://intatlikit.github.io/saving_account_plan_calculator/',
     description: 'Plan your savings and visualize your financial growth.'
+  },
+  {
+    id: '6',
+    title: 'Android Chucker View',
+    url: 'https://vb-android-chucker-viewer.web.app/',
+    description: 'A web-based viewer for Android Chucker HTTP inspector logs.'
+  },
+  {
+    id: '7',
+    title: 'iOS Pulse View',
+    url: 'https://amefuri.github.io/zloggerlens/',
+    description: 'An API log inspector and viewer for iOS Pulse console logs.'
   }
 ];
