@@ -19,6 +19,8 @@ Live at: [https://intatlikit.github.io/web-link-list/](https://intatlikit.github
 - `src/components/LinkCard.tsx`: The reusable card component for link items.
 - `src/App.tsx`: Main application shell and layout.
 - `.github/workflows/deploy.yml`: Configuration for automated deployments.
+- `git-conventional-commits/SKILL.md`: Source file for the custom conventional commits developer skill.
+- `git-conventional-commits.skill`: Zipped package of the conventional commit skill configuration.
 
 ## 📋 Development Routines
 
@@ -40,6 +42,13 @@ Runs **ESLint** and **TypeScript** validation to ensure code health.
 npm run preview:prod
 ```
 Builds the production assets and serves them locally for final verification.
+
+### AI Assistant Integration (Developer Skills)
+To package and synchronize changes to the AI assistant's custom conventional commits skill:
+```bash
+npm run skill:build
+```
+Copies the template configuration into the active `.gemini/` skill directory and packages it into the zipped `.skill` file.
 
 ## 🔗 Integrated Tools
 
