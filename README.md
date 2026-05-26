@@ -27,7 +27,7 @@ Live at: [https://intatlikit.github.io/web-link-list/](https://intatlikit.github
 npm install
 npm run dev
 ```
-Starts the development server at [http://localhost:5173](http://localhost:5173) with Hot Module Replacement (HMR).
+Starts the development server at [http://localhost:5173/web-link-list/](http://localhost:5173/web-link-list/) with Hot Module Replacement (HMR).
 
 ### Quality Assurance (Auto-checked on Push)
 ```bash
