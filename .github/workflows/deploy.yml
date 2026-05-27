@@ -38,6 +38,8 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Build
+        env:
+          VITE_APP_VERSION: 1.0.${{ github.run_number }}
         run: npm run build
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -59,7 +61,7 @@ jobs:
           secure: true
           username: ${{secrets.MAIL_USERNAME}}
           password: ${{secrets.MAIL_PASSWORD}}
-          subject: Deployment Successful - ${{github.repository}}
+          subject: Deployment Successful - v1.0.${{ github.run_number }} - ${{github.repository}}
           to: intat.likit@gmail.com
           from: GitHub Actions
           body: |
@@ -67,5 +69,6 @@ jobs:
             
             View the site at: ${{ steps.deployment.outputs.page_url }}
             
+            Version: v1.0.${{ github.run_number }}
             Commit: ${{ github.sha }}
             Branch: ${{ github.ref_name }}

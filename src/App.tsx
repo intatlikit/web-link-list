@@ -5,6 +5,7 @@ import LinkCard from './components/LinkCard';
 
 function App() {
   const [searchQuery, setSearchQuery] = useState('');
+  const appVersion = import.meta.env.VITE_APP_VERSION || 'local';
 
   const filteredLinks = links.filter((link) => {
     const query = searchQuery.toLowerCase();
@@ -48,7 +49,7 @@ function App() {
         )}
       </main>
       <footer className="app-footer">
-        <p>&copy; 2024 Link List App • Built with React & Vite</p>
+        <p>&copy; 2024 Link List App • v{appVersion} • Built with React & Vite</p>
       </footer>
     </div>
   );
