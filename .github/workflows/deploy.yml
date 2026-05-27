@@ -67,8 +67,7 @@ jobs:
           body: |
             The latest version of ${{github.repository}} has been successfully deployed to GitHub Pages.
             
-            View the site at: ${{ steps.deployment.outputs.page_url }}
+            View at: ${{ steps.deployment.outputs.page_url }}
             
             Version: v1.0.${{ github.run_number }}
-            Commit: ${{ github.sha }}
-            Branch: ${{ github.ref_name }}
+            
