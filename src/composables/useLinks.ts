@@ -1,47 +1,45 @@
 import { onMounted, ref } from 'vue';
-import { supabase } from '../lib/supabase';
-import { links as localLinks } from '../data/links';
-import type { LinkItem, LinkRow } from '../types';
-
-function toLinkItem(row: LinkRow): LinkItem {
-  return {
-    id: String(row.id),
-    title: row.title,
-    url: row.url,
-    description: row.description ?? undefined,
-  };
-}
+import { fetchLinks, reorderLinks } from '../services/linkService';
+import { errorMessage } from '../lib/errors';
+import type { LinkItem } from '../types';
 
 export function useLinks() {
   const links = ref<LinkItem[]>([]);
   const loading = ref(true);
   const error = ref<string | null>(null);
+  /** Error from a background action (e.g. saving a new order) — data stays visible. */
+  const actionError = ref<string | null>(null);
 
-  async function fetchLinks() {
+  async function loadLinks() {
     loading.value = true;
     error.value = null;
-
-    if (!supabase) {
-      links.value = localLinks;
+    try {
+      links.value = await fetchLinks();
+    } catch (e) {
+      error.value = errorMessage(e);
+    } finally {
       loading.value = false;
-      return;
     }
-
-    const { data, error: queryError } = await supabase
-      .from('links')
-      .select('id, title, url, description')
-      .eq('is_active', true)
-      .order('sort_order', { ascending: true });
-
-    if (queryError) {
-      error.value = queryError.message;
-    } else {
-      links.value = (data as LinkRow[]).map(toLinkItem);
-    }
-    loading.value = false;
   }
 
-  onMounted(fetchLinks);
+  /** Applies the new order immediately and rolls back if saving fails. */
+  async function reorder(next: LinkItem[]) {
+    const previous = links.value;
+    links.value = next;
+    actionError.value = null;
+    try {
+      await reorderLinks(next.map((link) => link.id));
+    } catch (e) {
+      links.value = previous;
+      actionError.value = `Could not save the new order: ${errorMessage(e)}`;
+    }
+  }
 
-  return { links, loading, error, fetchLinks };
+  function clearActionError() {
+    actionError.value = null;
+  }
+
+  onMounted(loadLinks);
+
+  return { links, loading, error, actionError, loadLinks, reorder, clearActionError };
 }

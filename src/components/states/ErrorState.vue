@@ -1,7 +1,11 @@
 <script setup lang="ts">
-defineProps<{
-  message: string;
-}>();
+withDefaults(
+  defineProps<{
+    message: string;
+    title?: string;
+  }>(),
+  { title: 'Could not load resources.' }
+);
 
 defineEmits<{
   retry: [];
@@ -14,7 +18,7 @@ defineEmits<{
     role="alert"
   >
     <p class="error-title">
-      Could not load resources.
+      {{ title }}
     </p>
     <p class="error-message">
       {{ message }}

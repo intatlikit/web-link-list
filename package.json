@@ -11,12 +11,13 @@
     "build:check": "npm run check && npm run build",
     "preview": "vite preview",
     "preview:prod": "npm run build && vite preview",
-    "lint": "eslint . --ext .ts,.vue --report-unused-disable-directives --max-warnings 0",
-    "skill:build": "mkdir -p .gemini/skills/git-conventional-commits && cp git-conventional-commits/SKILL.md .gemini/skills/git-conventional-commits/SKILL.md && cd git-conventional-commits && zip -FSr ../git-conventional-commits.skill assets references scripts SKILL.md"
+    "lint": "eslint . --ext .ts,.vue --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0",
-    "vue": "^3.5.0"
+    "vue": "^3.5.0",
+    "vue-draggable-plus": "^0.6.1",
+    "vue-router": "^4.6.4"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.1.0",
