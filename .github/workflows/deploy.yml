@@ -46,7 +46,8 @@ jobs:
             exit 1
           fi
       - name: Install dependencies
-        run: npm install
+        # npm ci installs exactly what package-lock.json pins
+        run: npm ci
       - name: Build
         env:
           VITE_APP_VERSION: 1.0.${{ github.run_number }}

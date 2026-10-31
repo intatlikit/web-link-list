@@ -1,19 +1,24 @@
 <script setup lang="ts">
 import IconDotsVertical from '../icons/IconDotsVertical.vue';
 import IconGrip from '../icons/IconGrip.vue';
+import { computed } from 'vue';
 import type { LinkItem } from '../../types';
 
-defineProps<{
+const props = defineProps<{
   link: LinkItem;
   /** Show the drag handle. */
   sortable?: boolean;
 }>();
+
+// Defense in depth: the DB already rejects non-http(s) URLs, but never render
+// `javascript:` or other schemes as a clickable href.
+const safeHref = computed(() => (/^https?:\/\//i.test(props.link.url) ? props.link.url : undefined));
 </script>
 
 <template>
   <div class="link-card">
     <a
-      :href="link.url"
+      :href="safeHref"
       target="_blank"
       rel="noopener noreferrer"
       class="link-card-link"

@@ -1,6 +1,6 @@
 -- Run after 001_create_links.sql. Lets anyone (no sign-in) add, edit, and reorder links.
 -- Safe to re-run; also replaces the earlier sign-in-only policies if they exist.
--- There is intentionally no DELETE policy, so links cannot be removed from the site.
+-- Links cannot be deleted or hidden from the site (no DELETE privilege, is_active not writable).
 
 -- Data guards: with public writes, the database is the only thing enforcing these.
 -- Blocks `javascript:` and other non-web URLs, which would run code when a card is clicked.
@@ -14,6 +14,13 @@ alter table public.links add constraint links_text_length
     char_length(btrim(title)) between 1 and 100
     and (description is null or char_length(description) <= 300)
   );
+
+-- Column-level privileges: Supabase grants ALL on public tables to anon/authenticated by default.
+-- Restrict writes to the columns the site edits, so nobody can hide links (is_active = false)
+-- or rewrite created_at via the API. TRUNCATE is not covered by RLS, so revoke it too.
+revoke insert, update, delete, truncate on public.links from anon, authenticated;
+grant insert (title, url, description) on public.links to anon, authenticated;
+grant update (title, url, description, sort_order) on public.links to anon, authenticated;
 
 drop policy if exists "Authenticated can insert links" on public.links;
 drop policy if exists "Authenticated can update links" on public.links;
