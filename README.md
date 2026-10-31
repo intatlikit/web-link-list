@@ -9,7 +9,8 @@ Live at: [https://intatlikit.github.io/web-link-list/](https://intatlikit.github
 - **Search** by name or URL.
 - **Add / edit items** — floating `+` button opens an add page; the ⋮ button on each card opens an edit page. Both let you pick the item's position (default: end of list).
 - **Drag & drop reordering** on desktop and mobile (drag the grip handle on a card).
-- **Open editing:** anyone can add, edit, and reorder — no sign-in. Every device reads and writes the same Supabase table. Deleting is not possible from the site.
+- **Open editing:** anyone can add, edit, reorder, and delete — no sign-in. Every device reads and writes the same Supabase table.
+- **Delete with confirmation** from the card's trash icon or the edit page. Deletes are soft (`is_active = false`), so items can be restored in the Supabase Table Editor.
 - **CI/CD:** GitHub Actions builds and deploys to GitHub Pages on every push to `main`.
 
 ## 🛠 Project Structure
@@ -45,7 +46,7 @@ npm run preview:prod   # build and preview the production bundle
 2. Pushing to `main` updates the live site.
 
 ### Supabase Setup
-1. In the Supabase SQL Editor, run `supabase/migrations/001_create_links.sql`, then `002_public_editing.sql`.
+1. In the Supabase SQL Editor, run the files in `supabase/migrations/` in order: `001_create_links.sql`, `002_public_editing.sql`, `003_soft_delete.sql`.
 2. In GitHub **Settings > Secrets and variables > Actions**, add repository secrets:
    - `SUPABASE_URL` — your project URL
    - `SUPABASE_ANON_KEY` — the project's anon (public) key — never the `service_role` key

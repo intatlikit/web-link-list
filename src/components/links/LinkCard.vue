@@ -1,13 +1,18 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import IconDotsVertical from '../icons/IconDotsVertical.vue';
 import IconGrip from '../icons/IconGrip.vue';
-import { computed } from 'vue';
+import IconTrash from '../icons/IconTrash.vue';
 import type { LinkItem } from '../../types';
 
 const props = defineProps<{
   link: LinkItem;
   /** Show the drag handle. */
   sortable?: boolean;
+}>();
+
+const emit = defineEmits<{
+  delete: [link: LinkItem];
 }>();
 
 // Defense in depth: the DB already rejects non-http(s) URLs, but never render
@@ -36,6 +41,7 @@ const safeHref = computed(() => (/^https?:\/\//i.test(props.link.url) ? props.li
       </div>
     </a>
 
+    <!-- Action bar: drag handle on the left, delete + edit on the right -->
     <div class="card-actions">
       <span
         v-if="sortable"
@@ -44,26 +50,38 @@ const safeHref = computed(() => (/^https?:\/\//i.test(props.link.url) ? props.li
       >
         <IconGrip />
       </span>
-      <RouterLink
-        :to="{ name: 'link-edit', params: { id: link.id } }"
-        class="card-action"
-        :aria-label="`Edit ${link.title}`"
-        title="Edit"
-      >
-        <IconDotsVertical />
-      </RouterLink>
+      <div class="card-actions-end">
+        <button
+          type="button"
+          class="card-action card-action-danger"
+          :aria-label="`Delete ${link.title}`"
+          title="Delete"
+          @click="emit('delete', link)"
+        >
+          <IconTrash />
+        </button>
+        <RouterLink
+          :to="{ name: 'link-edit', params: { id: link.id } }"
+          class="card-action"
+          :aria-label="`Edit ${link.title}`"
+          title="Edit"
+        >
+          <IconDotsVertical />
+        </RouterLink>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
 .link-card {
-  position: relative;
   background-color: var(--color-surface);
   border-radius: 12px;
   border: 1px solid var(--color-card-border);
   transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
   display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .link-card:hover {
@@ -75,7 +93,7 @@ const safeHref = computed(() => (/^https?:\/\//i.test(props.link.url) ? props.li
 
 .link-card-link {
   flex: 1;
-  padding: 1.5rem;
+  padding: 1.5rem 1.5rem 1rem;
   text-align: left;
   display: flex;
   flex-direction: column;
@@ -90,8 +108,6 @@ const safeHref = computed(() => (/^https?:\/\//i.test(props.link.url) ? props.li
   color: var(--color-heading);
   font-size: clamp(1.25rem, 4vw, 1.5rem);
   overflow-wrap: anywhere;
-  /* Keep the title clear of the action buttons */
-  padding-right: 4.5rem;
 }
 
 .link-description {
@@ -130,9 +146,15 @@ const safeHref = computed(() => (/^https?:\/\//i.test(props.link.url) ? props.li
 }
 
 .card-actions {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.5rem;
+  display: flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.card-actions-end {
+  /* Pushes edit + delete to the right whether or not the drag handle is shown */
+  margin-left: auto;
   display: flex;
   gap: 0.25rem;
 }
@@ -141,11 +163,15 @@ const safeHref = computed(() => (/^https?:\/\//i.test(props.link.url) ? props.li
   /* 40px keeps a comfortable touch target on mobile */
   width: 40px;
   height: 40px;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: none;
+  border: none;
   border-radius: 8px;
   color: var(--color-muted);
+  cursor: pointer;
   transition: color 0.2s, background-color 0.2s;
   -webkit-tap-highlight-color: transparent;
 }
@@ -153,6 +179,11 @@ const safeHref = computed(() => (/^https?:\/\//i.test(props.link.url) ? props.li
 .card-action:hover {
   color: var(--color-accent);
   background-color: var(--color-accent-ring);
+}
+
+.card-action-danger:hover {
+  color: var(--color-error);
+  background-color: var(--color-error-ring);
 }
 
 .drag-handle {

@@ -5,8 +5,9 @@ import PageHeader from '../components/layout/PageHeader.vue';
 import LinkForm from '../components/links/LinkForm.vue';
 import LoadingState from '../components/states/LoadingState.vue';
 import ErrorState from '../components/states/ErrorState.vue';
+import ConfirmDialog from '../components/common/ConfirmDialog.vue';
 import { useLinks } from '../composables/useLinks';
-import { updateLink } from '../services/linkService';
+import { deleteLink, updateLink } from '../services/linkService';
 import { errorMessage } from '../lib/errors';
 import type { LinkInput } from '../types';
 
@@ -42,6 +43,27 @@ async function handleSubmit(input: LinkInput, position: number) {
     saving.value = false;
   }
 }
+
+const confirmOpen = ref(false);
+const deleting = ref(false);
+const deleteMessage = computed(
+  () => `"${link.value?.title ?? ''}" will be removed from the hub for everyone.`
+);
+
+async function handleDelete() {
+  deleting.value = true;
+  saveError.value = null;
+  try {
+    await deleteLink(props.id);
+    confirmOpen.value = false;
+    await router.push({ name: 'home' });
+  } catch (e) {
+    confirmOpen.value = false;
+    saveError.value = `Could not delete the item: ${errorMessage(e)}`;
+  } finally {
+    deleting.value = false;
+  }
+}
 </script>
 
 <template>
@@ -72,12 +94,23 @@ async function handleSubmit(input: LinkInput, position: number) {
       :initial="link"
       :initial-position="currentPosition"
       submit-label="Save changes"
-      :saving="saving"
+      :saving="saving || deleting"
       :error="saveError"
+      deletable
       @submit="handleSubmit"
       @cancel="router.push({ name: 'home' })"
+      @delete="confirmOpen = true"
     />
   </main>
+
+  <ConfirmDialog
+    :open="confirmOpen"
+    title="Delete this item?"
+    :message="deleteMessage"
+    :busy="deleting"
+    @confirm="handleDelete"
+    @cancel="confirmOpen = false"
+  />
 </template>
 
 <style scoped>

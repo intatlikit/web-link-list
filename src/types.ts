@@ -2,7 +2,7 @@ export interface LinkItem {
   id: string;
   title: string;
   url: string;
-  description?: string;
+  description: string;
 }
 
 /** Editable fields of a link (used by the add/edit form). */

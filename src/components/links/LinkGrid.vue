@@ -12,6 +12,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   reorder: [links: LinkItem[]];
+  delete: [link: LinkItem];
 }>();
 
 const gridRef = ref<HTMLElement | null>(null);
@@ -50,6 +51,7 @@ useDraggable(
       :key="link.id"
       :link="link"
       :sortable="sortable"
+      @delete="emit('delete', $event)"
     />
   </div>
 </template>

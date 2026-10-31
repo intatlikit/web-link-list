@@ -31,3 +31,7 @@ export async function updateLink(id: string, input: LinkInput, position?: number
 export function reorderLinks(ids: string[]): Promise<void> {
   return linkBackend.saveOrder(ids);
 }
+
+export function deleteLink(id: string): Promise<void> {
+  return linkBackend.remove(id);
+}

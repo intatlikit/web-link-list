@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import BaseButton from '../common/BaseButton.vue';
 import ClearableInput from '../common/ClearableInput.vue';
 import SelectInput from '../common/SelectInput.vue';
 import type { LinkInput, LinkItem } from '../../types';
@@ -14,11 +15,14 @@ const props = defineProps<{
   submitLabel: string;
   saving?: boolean;
   error?: string | null;
+  /** Show a Delete button (edit page). */
+  deletable?: boolean;
 }>();
 
 const emit = defineEmits<{
   submit: [input: LinkInput, position: number];
   cancel: [];
+  delete: [];
 }>();
 
 const endPosition = computed(() => props.others.length + 1);
@@ -41,16 +45,21 @@ const positionOptions = computed(() => {
   ];
 });
 
+const validationError = ref<string | null>(null);
+
 function handleSubmit() {
-  emit(
-    'submit',
-    {
-      title: title.value.trim(),
-      url: url.value.trim(),
-      description: description.value.trim() || undefined,
-    },
-    position.value
-  );
+  const input: LinkInput = {
+    title: title.value.trim(),
+    url: url.value.trim(),
+    description: description.value.trim(),
+  };
+  // `required` lets whitespace-only values through, so check after trimming
+  if (!input.title || !input.url || !input.description) {
+    validationError.value = 'All fields are required and cannot be blank.';
+    return;
+  }
+  validationError.value = null;
+  emit('submit', input, position.value);
 }
 </script>
 
@@ -85,10 +94,11 @@ function handleSubmit() {
     </label>
 
     <label class="form-field">
-      <span class="form-label">Description <span class="form-hint">(optional)</span></span>
+      <span class="form-label">Description</span>
       <ClearableInput
         v-model="description"
         multiline
+        required
         rows="3"
         maxlength="300"
         placeholder="What is this tool for?"
@@ -108,29 +118,38 @@ function handleSubmit() {
     </label>
 
     <p
-      v-if="error"
+      v-if="validationError || error"
       class="form-error"
       role="alert"
     >
-      {{ error }}
+      {{ validationError || error }}
     </p>
 
     <div class="form-actions">
-      <button
-        type="button"
-        class="button button-secondary"
+      <BaseButton
+        v-if="deletable"
+        variant="danger-outline"
+        class="form-button delete-button"
+        :disabled="saving"
+        @click="emit('delete')"
+      >
+        Delete
+      </BaseButton>
+      <BaseButton
+        variant="secondary"
+        class="form-button"
         :disabled="saving"
         @click="emit('cancel')"
       >
         Cancel
-      </button>
-      <button
+      </BaseButton>
+      <BaseButton
         type="submit"
-        class="button button-primary"
+        class="form-button"
         :disabled="saving"
       >
         {{ saving ? 'Saving...' : submitLabel }}
-      </button>
+      </BaseButton>
     </div>
   </form>
 </template>
@@ -171,40 +190,23 @@ function handleSubmit() {
   justify-content: flex-end;
 }
 
-.button {
-  padding: 0.7rem 1.5rem;
-  min-height: 44px;
-  font-size: 1rem;
-  font-family: inherit;
-  border-radius: 50px;
-  border: 1px solid var(--color-accent);
-  cursor: pointer;
-  transition: opacity 0.2s, background-color 0.2s;
+/* Delete sits apart on the left, away from Save */
+.delete-button {
+  margin-right: auto;
 }
 
-.button:disabled {
-  opacity: 0.6;
-  cursor: progress;
-}
-
-.button-primary {
-  background-color: var(--color-accent);
-  color: hsl(0, 0%, 100%);
-}
-
-.button-secondary {
-  background: none;
-  color: var(--color-accent);
-}
-
-/* Phones: full-width buttons, primary action on top */
+/* Phones: full-width buttons stacked Save → Cancel → Delete */
 @media (max-width: 480px) {
   .form-actions {
     flex-direction: column-reverse;
   }
 
-  .button {
+  .form-button {
     width: 100%;
+  }
+
+  .delete-button {
+    margin-right: 0;
   }
 }
 </style>

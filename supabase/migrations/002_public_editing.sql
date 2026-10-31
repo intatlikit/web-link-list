@@ -1,6 +1,7 @@
 -- Run after 001_create_links.sql. Lets anyone (no sign-in) add, edit, and reorder links.
 -- Safe to re-run; also replaces the earlier sign-in-only policies if they exist.
--- Links cannot be deleted or hidden from the site (no DELETE privilege, is_active not writable).
+-- No DELETE privilege and is_active is not writable; deleting goes through
+-- the soft-delete function in 003_soft_delete.sql.
 
 -- Data guards: with public writes, the database is the only thing enforcing these.
 -- Blocks `javascript:` and other non-web URLs, which would run code when a card is clicked.
@@ -12,7 +13,8 @@ alter table public.links drop constraint if exists links_text_length;
 alter table public.links add constraint links_text_length
   check (
     char_length(btrim(title)) between 1 and 100
-    and (description is null or char_length(description) <= 300)
+    and description is not null
+    and char_length(btrim(description)) between 1 and 300
   );
 
 -- Column-level privileges: Supabase grants ALL on public tables to anon/authenticated by default.

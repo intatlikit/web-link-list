@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import AppHeader from '../components/layout/AppHeader.vue';
 import SearchBar from '../components/search/SearchBar.vue';
 import LinkGrid from '../components/links/LinkGrid.vue';
@@ -8,15 +8,31 @@ import ErrorState from '../components/states/ErrorState.vue';
 import EmptyState from '../components/states/EmptyState.vue';
 import AlertBanner from '../components/common/AlertBanner.vue';
 import FloatingActionButton from '../components/common/FloatingActionButton.vue';
+import ConfirmDialog from '../components/common/ConfirmDialog.vue';
 import IconPlus from '../components/icons/IconPlus.vue';
 import { useLinks } from '../composables/useLinks';
 import { useLinkSearch } from '../composables/useLinkSearch';
+import type { LinkItem } from '../types';
 
-const { links, loading, error, actionError, loadLinks, reorder, clearActionError } = useLinks();
+const { links, loading, error, actionError, loadLinks, reorder, remove, clearActionError } =
+  useLinks();
 const { searchQuery, filteredLinks } = useLinkSearch(links);
 
 // Reordering a filtered subset is ambiguous, so drag is off while searching.
 const sortable = computed(() => !searchQuery.value.trim());
+
+/** Item waiting for delete confirmation. */
+const pendingDelete = ref<LinkItem | null>(null);
+const deleteMessage = computed(
+  () => `"${pendingDelete.value?.title ?? ''}" will be removed from the hub for everyone.`
+);
+
+function confirmDelete() {
+  const link = pendingDelete.value;
+  pendingDelete.value = null;
+  // useLinks removes it right away and restores it if the request fails
+  if (link) remove(link.id);
+}
 </script>
 
 <template>
@@ -51,8 +67,17 @@ const sortable = computed(() => !searchQuery.value.trim());
       :links="filteredLinks"
       :sortable="sortable"
       @reorder="reorder"
+      @delete="pendingDelete = $event"
     />
   </main>
+
+  <ConfirmDialog
+    :open="pendingDelete !== null"
+    title="Delete this item?"
+    :message="deleteMessage"
+    @confirm="confirmDelete"
+    @cancel="pendingDelete = null"
+  />
 
   <FloatingActionButton
     :to="{ name: 'link-create' }"

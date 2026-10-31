@@ -19,6 +19,7 @@
   --color-accent: hsl(237, 100%, 70%);
   --color-accent-ring: hsla(237, 100%, 70%, 0.2);
   --color-error: hsl(0, 85%, 65%);
+  --color-error-ring: hsla(0, 85%, 65%, 0.15);
   --shadow-card: 0 10px 20px hsla(0, 0%, 0%, 0.3);
 
   color: var(--color-text);
@@ -43,6 +44,7 @@
     --color-border: hsl(0, 0%, 87%);
     --color-card-border: hsl(0, 0%, 87%);
     --color-error: hsl(0, 70%, 50%);
+    --color-error-ring: hsla(0, 70%, 50%, 0.12);
   }
 }
 

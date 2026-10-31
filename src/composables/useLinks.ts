@@ -1,5 +1,5 @@
 import { onMounted, ref } from 'vue';
-import { fetchLinks, reorderLinks } from '../services/linkService';
+import { deleteLink, fetchLinks, reorderLinks } from '../services/linkService';
 import { errorMessage } from '../lib/errors';
 import type { LinkItem } from '../types';
 
@@ -35,11 +35,24 @@ export function useLinks() {
     }
   }
 
+  /** Removes the item immediately and restores it if deleting fails. */
+  async function remove(id: string) {
+    const previous = links.value;
+    links.value = previous.filter((link) => link.id !== id);
+    actionError.value = null;
+    try {
+      await deleteLink(id);
+    } catch (e) {
+      links.value = previous;
+      actionError.value = `Could not delete the item: ${errorMessage(e)}`;
+    }
+  }
+
   function clearActionError() {
     actionError.value = null;
   }
 
   onMounted(loadLinks);
 
-  return { links, loading, error, actionError, loadLinks, reorder, clearActionError };
+  return { links, loading, error, actionError, loadLinks, reorder, remove, clearActionError };
 }

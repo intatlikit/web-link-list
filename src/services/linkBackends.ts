@@ -11,6 +11,8 @@ export interface LinkBackend {
   update(id: string, input: LinkInput): Promise<void>;
   /** Persists the display order; `ids` must contain every listed item. */
   saveOrder(ids: string[]): Promise<void>;
+  /** Removes the item from the list (soft delete in Supabase). */
+  remove(id: string): Promise<void>;
 }
 
 const NOT_PERMITTED =
@@ -21,7 +23,7 @@ function toLinkItem(row: LinkRow): LinkItem {
     id: String(row.id),
     title: row.title,
     url: row.url,
-    description: row.description ?? undefined,
+    description: row.description ?? '',
   };
 }
 
@@ -29,7 +31,7 @@ function toRowInput(input: LinkInput) {
   return {
     title: input.title,
     url: input.url,
-    description: input.description || null,
+    description: input.description,
   };
 }
 
@@ -73,6 +75,12 @@ function createSupabaseBackend(client: SupabaseClient): LinkBackend {
       if (error) throw new Error(error.message);
       if (data !== ids.length) throw new Error(NOT_PERMITTED);
     },
+
+    async remove(id) {
+      const { data, error } = await client.rpc('delete_link', { link_id: Number(id) });
+      if (error) throw new Error(error.message);
+      if (data !== 1) throw new Error('Item not found. It may have already been deleted.');
+    },
   };
 }
 
@@ -108,6 +116,10 @@ function createLocalBackend(): LinkBackend {
     async saveOrder(ids) {
       const byId = new Map(read().map((link) => [link.id, link]));
       write(ids.map((id) => byId.get(id)).filter((link): link is LinkItem => link !== undefined));
+    },
+
+    async remove(id) {
+      write(read().filter((link) => link.id !== id));
     },
   };
 }
