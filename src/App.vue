@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import AppFooter from './components/layout/AppFooter.vue';
-import AuthStatus from './components/auth/AuthStatus.vue';
 
 const appVersion = import.meta.env.VITE_APP_VERSION || 'local';
 </script>
@@ -8,9 +7,7 @@ const appVersion = import.meta.env.VITE_APP_VERSION || 'local';
 <template>
   <div class="app-container">
     <RouterView />
-    <AppFooter :version="appVersion">
-      <AuthStatus />
-    </AppFooter>
+    <AppFooter :version="appVersion" />
   </div>
 </template>
 

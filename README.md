@@ -9,17 +9,17 @@ Live at: [https://intatlikit.github.io/web-link-list/](https://intatlikit.github
 - **Search** by name or URL.
 - **Add / edit items** — floating `+` button opens an add page; the ⋮ button on each card opens an edit page. Both let you pick the item's position (default: end of list).
 - **Drag & drop reordering** on desktop and mobile (drag the grip handle on a card).
-- **Sign-in protected editing** via Supabase Auth; visitors see a read-only hub.
+- **Open editing:** anyone can add, edit, and reorder — no sign-in. Every device reads and writes the same Supabase table. Deleting is not possible from the site.
 - **CI/CD:** GitHub Actions builds and deploys to GitHub Pages on every push to `main`.
 
 ## 🛠 Project Structure
 
 - `src/App.vue`: App shell (router view + footer).
-- `src/views/`: Pages — `HomeView`, `LinkCreateView`, `LinkEditView`, `LoginView`.
-- `src/components/`: UI components grouped by role — `layout/`, `search/`, `links/`, `states/`, `common/`, `auth/`, `icons/`.
-- `src/composables/`: `useLinks` (load + reorder), `useLinkSearch`, `useAuth`.
+- `src/views/`: Pages — `HomeView`, `LinkCreateView`, `LinkEditView`.
+- `src/components/`: UI components grouped by role — `layout/`, `search/`, `links/`, `states/`, `common/`, `icons/`.
+- `src/composables/`: `useLinks` (load + reorder), `useLinkSearch`.
 - `src/services/`: `linkService` (create/update/reorder logic) on top of `linkBackends` (Supabase or localStorage).
-- `src/router/`: Hash-based routes and the sign-in guard.
+- `src/router/`: Hash-based routes.
 - `src/data/links.ts`: Seed data for local mode (no Supabase configured).
 - `supabase/migrations/`: Table, RLS policies, and the `reorder_links` function.
 - `.github/workflows/deploy.yml`: Automated deployment.
@@ -32,7 +32,7 @@ cp .env.example .env.local   # optional: fill in Supabase URL + anon key
 npm run dev
 ```
 Starts the dev server at [http://localhost:5173/web-link-list/](http://localhost:5173/web-link-list/).
-Without `.env.local` the app runs in **local mode**: editing needs no sign-in and changes are saved to the browser's localStorage.
+Without `.env.local` the app runs in **local mode**: changes are saved to the browser's localStorage only.
 
 ```bash
 npm run check          # ESLint + vue-tsc (run before committing)
@@ -45,10 +45,8 @@ npm run preview:prod   # build and preview the production bundle
 2. Pushing to `main` updates the live site.
 
 ### Supabase Setup
-1. In the Supabase SQL Editor, run `supabase/migrations/001_create_links.sql`, then `002_enable_editing.sql`.
-2. **Authentication > Sign In / Providers:** turn off "Allow new users to sign up" (any signed-in user can edit).
-3. **Authentication > Users > Add user:** create your own account.
-4. In GitHub **Settings > Secrets and variables > Actions**, add repository secrets:
+1. In the Supabase SQL Editor, run `supabase/migrations/001_create_links.sql`, then `002_public_editing.sql`.
+2. In GitHub **Settings > Secrets and variables > Actions**, add repository secrets:
    - `SUPABASE_URL` — your project URL
    - `SUPABASE_ANON_KEY` — the project's anon (public) key — never the `service_role` key
-5. The deploy workflow passes them to the build as `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY`.
+3. The deploy workflow passes them to the build as `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY`.

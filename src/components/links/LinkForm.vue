@@ -71,6 +71,9 @@ function handleSubmit() {
         class="form-control"
         type="url"
         required
+        maxlength="2000"
+        pattern="https?://.+"
+        title="Must start with http:// or https://"
         inputmode="url"
         placeholder="https://example.com"
       >

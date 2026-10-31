@@ -6,7 +6,6 @@ import type { LinkItem } from '../../types';
 
 const props = defineProps<{
   links: LinkItem[];
-  editable?: boolean;
   /** Enable drag & drop reordering (mouse and touch). */
   sortable?: boolean;
 }>();
@@ -50,7 +49,6 @@ useDraggable(
       v-for="link in items"
       :key="link.id"
       :link="link"
-      :editable="editable"
       :sortable="sortable"
     />
   </div>

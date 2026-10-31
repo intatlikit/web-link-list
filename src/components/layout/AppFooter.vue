@@ -7,7 +7,6 @@ defineProps<{
 <template>
   <footer class="app-footer">
     <p>&copy; 2024 Link List App • v{{ version }} • Built with Vue, Vite & Supabase</p>
-    <slot />
   </footer>
 </template>
 

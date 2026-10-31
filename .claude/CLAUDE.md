@@ -9,12 +9,12 @@
 ## ภาพรวมโปรเจกต์
 
 เว็บรวมลิงก์เครื่องมือส่วนตัว ("hub") deploy บน GitHub Pages ที่ `https://intatlikit.github.io/web-link-list/`
-ผู้ใช้ที่ login แล้วเพิ่ม/แก้/ลากเรียงลำดับ item ได้ ผู้เข้าชมทั่วไปเห็นแบบอ่านอย่างเดียว
+**ทุกคนเพิ่ม/แก้/ลากเรียงลำดับ item ได้โดยไม่ต้อง login** (ผู้ใช้ตัดสินใจเอง) ทุกเครื่องเห็นข้อมูลชุดเดียวกันจาก Supabase ไม่มีการลบผ่านเว็บ
 
 - **Framework:** Vue 3 (`<script setup lang="ts">`, Composition API) + Vue Router (hash history)
 - **Build:** Vite 5 (`base: '/web-link-list/'`)
 - **Language:** TypeScript strict, ตรวจด้วย `vue-tsc`
-- **Data/Auth:** Supabase (`@supabase/supabase-js`) ตาราง `links` + Supabase Auth (email/password)
+- **Data:** Supabase (`@supabase/supabase-js`) ตาราง `links` (ไม่ใช้ Supabase Auth)
 - **Drag & drop:** `vue-draggable-plus` (SortableJS) ลากผ่าน handle — รองรับทั้ง mouse และ touch
 - **Styling:** Vanilla CSS — `<style scoped>` ต่อ component + CSS variables (HSL) ใน `src/assets/main.css`
 - **CI/CD:** GitHub Actions → GitHub Pages + แจ้งเตือนทางอีเมล
@@ -23,23 +23,21 @@
 
 ```
 src/
-├── main.ts                      # entry: createApp + router + initAuth
+├── main.ts                      # entry: createApp + router
 ├── App.vue                      # shell: <RouterView> + footer
-├── router/index.ts              # routes + guard (meta.requiresAuth)
+├── router/index.ts              # routes (hash history)
 ├── views/                       # หน้าแต่ละ route (ประกอบ component, เรียก service)
 │   ├── HomeView.vue             # รายการ + ค้นหา + drag & drop + FAB
 │   ├── LinkCreateView.vue       # /links/new
-│   ├── LinkEditView.vue         # /links/:id/edit
-│   └── LoginView.vue            # /login
+│   └── LinkEditView.vue         # /links/:id/edit
 ├── components/
 │   ├── layout/                  # AppHeader, AppFooter, PageHeader
 │   ├── search/SearchBar.vue
 │   ├── links/                   # LinkGrid (sortable), LinkCard, LinkForm
 │   ├── states/                  # LoadingState, ErrorState, EmptyState
 │   ├── common/                  # FloatingActionButton, AlertBanner
-│   ├── auth/                    # LoginForm, AuthStatus
 │   └── icons/                   # SVG icons (currentColor)
-├── composables/                 # useLinks, useLinkSearch, useAuth
+├── composables/                 # useLinks, useLinkSearch
 ├── services/
 │   ├── linkService.ts           # create/update/reorder + คำนวณตำแหน่ง
 │   └── linkBackends.ts          # Supabase backend / localStorage backend
@@ -47,16 +45,18 @@ src/
 ├── assets/                      # main.css (theme tokens, .card-grid), form.css
 ├── data/links.ts                # seed สำหรับ local mode
 └── types.ts                     # LinkItem, LinkInput, LinkRow
-supabase/migrations/             # 001 ตาราง+RLS อ่าน+seed, 002 สิทธิ์เขียน+reorder_links()
+supabase/migrations/             # 001 ตาราง+RLS อ่าน+seed, 002 public insert/update + constraints + reorder_links()
 ```
 
-## Supabase, Auth และ Secrets
+## Supabase และ Secrets
 
 - Client อ่านค่าจาก `VITE_SUPABASE_URL` และ `VITE_SUPABASE_ANON_KEY`
 - ใน CI ค่าเหล่านี้มาจาก **GitHub repository secrets** `SUPABASE_URL` และ `SUPABASE_ANON_KEY` (ส่งเป็น env ในขั้น Build ของ `.github/workflows/deploy.yml`)
-- **Local mode:** ถ้าไม่มี env → ใช้ localStorage backend, แก้ไขได้โดยไม่ต้อง login (`canEdit` = true)
-- **Supabase mode:** ต้อง login ถึงจะแก้ได้; RLS อนุญาต insert/update ให้ `authenticated` — ต้องปิด public sign-up ใน Supabase
-- anon key ถูก bundle ไปฝั่ง client เสมอ ความปลอดภัยขึ้นกับ **RLS** — ห้ามใช้ `service_role` key ใน frontend เด็ดขาด
+- CI จะ fail ถ้าไม่มี secrets (กันเว็บจริงหลุดไปใช้ local mode)
+- **Local mode:** ถ้าไม่มี env → ใช้ localStorage backend (dev เท่านั้น)
+- RLS เปิด select/insert/update ให้ `anon` แต่**ไม่มี delete policy** — ห้ามเพิ่มโดยไม่ถามผู้ใช้
+- เพราะใครก็เขียนได้ DB constraints คือด่านเดียวที่คุมข้อมูล: URL ต้องเป็น `http(s)://` (กัน `javascript:` XSS), จำกัดความยาว title/description — ฝั่งฟอร์มต้อง validate ให้ตรงกัน
+- anon key ถูก bundle ไปฝั่ง client เสมอ — ห้ามใช้ `service_role` key ใน frontend เด็ดขาด
 - ลำดับเก็บใน `sort_order`; เขียนลำดับใหม่ทั้งชุดผ่าน RPC `reorder_links(ordered_ids bigint[])`
 - เปลี่ยน schema → เพิ่มไฟล์ migration ใหม่ใน `supabase/migrations/` (ห้ามแก้ไฟล์ที่รันไปแล้ว) และอัปเดต `LinkRow`, `linkBackends.ts` ให้ตรงกัน
 

@@ -35,7 +35,6 @@ This skill guides the process of analyzing staged and unstaged changes to genera
 - **style**: Layout, color, animation, typography CSS (`src/assets/*.css`, `<style>` blocks).
 - **data**: Data access and link content (`src/services/`, `src/composables/useLinks.ts`, `src/data/links.ts`).
 - **db**: Supabase schema, RLS, and functions (`supabase/migrations/`).
-- **auth**: Sign-in and access control (`src/composables/useAuth.ts`, `src/components/auth/`, router guards).
 - **router**: Routes and navigation (`src/router/`).
 - **ci**: Workflow configuration (`.github/workflows/deploy.yml`).
 - **skill**: Claude config and skills (`.claude/`).
@@ -76,5 +75,5 @@ This skill guides the process of analyzing staged and unstaged changes to genera
 | --- | --- | --- |
 | Added a floating button to create links | `Added FAB.` | `feat(ui): add floating button to create links` |
 | Fixed drag handle not working on iOS | `fix drag` | `fix(ui): enable touch dragging on card handle` |
-| Added write policies for signed-in users | `update sql` | `feat(db): allow authenticated users to edit links` |
+| Added a URL check constraint | `update sql` | `feat(db): only allow http(s) urls in links` |
 | Passed Supabase secrets to the build | `Fixed deploy.yml` | `ci: pass Supabase secrets to build step` |

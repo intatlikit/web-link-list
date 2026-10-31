@@ -5,18 +5,13 @@ import type { LinkItem } from '../../types';
 
 defineProps<{
   link: LinkItem;
-  /** Show the edit (three dots) button. */
-  editable?: boolean;
   /** Show the drag handle. */
   sortable?: boolean;
 }>();
 </script>
 
 <template>
-  <div
-    class="link-card"
-    :class="{ 'has-actions': editable }"
-  >
+  <div class="link-card">
     <a
       :href="link.url"
       target="_blank"
@@ -36,10 +31,7 @@ defineProps<{
       </div>
     </a>
 
-    <div
-      v-if="editable"
-      class="card-actions"
-    >
+    <div class="card-actions">
       <span
         v-if="sortable"
         class="card-action drag-handle"
@@ -92,10 +84,7 @@ defineProps<{
   margin: 0 0 0.75rem 0;
   color: var(--color-heading);
   font-size: 1.5rem;
-}
-
-/* Keep the title clear of the action buttons */
-.has-actions .link-title {
+  /* Keep the title clear of the action buttons */
   padding-right: 4.5rem;
 }
 

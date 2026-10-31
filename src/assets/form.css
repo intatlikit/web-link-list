@@ -1,4 +1,4 @@
-/* Shared form styles used by LinkForm and LoginForm */
+/* Form styles for LinkForm (kept separate to stay reusable for future forms) */
 .form {
   width: 100%;
   max-width: 600px;

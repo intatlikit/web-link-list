@@ -11,14 +11,12 @@ import FloatingActionButton from '../components/common/FloatingActionButton.vue'
 import IconPlus from '../components/icons/IconPlus.vue';
 import { useLinks } from '../composables/useLinks';
 import { useLinkSearch } from '../composables/useLinkSearch';
-import { useAuth } from '../composables/useAuth';
 
 const { links, loading, error, actionError, loadLinks, reorder, clearActionError } = useLinks();
 const { searchQuery, filteredLinks } = useLinkSearch(links);
-const { canEdit } = useAuth();
 
 // Reordering a filtered subset is ambiguous, so drag is off while searching.
-const sortable = computed(() => canEdit.value && !searchQuery.value.trim());
+const sortable = computed(() => !searchQuery.value.trim());
 </script>
 
 <template>
@@ -51,14 +49,12 @@ const sortable = computed(() => canEdit.value && !searchQuery.value.trim());
     <LinkGrid
       v-else
       :links="filteredLinks"
-      :editable="canEdit"
       :sortable="sortable"
       @reorder="reorder"
     />
   </main>
 
   <FloatingActionButton
-    v-if="canEdit"
     :to="{ name: 'link-create' }"
     label="Add item"
   >

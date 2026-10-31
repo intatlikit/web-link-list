@@ -13,7 +13,8 @@ export interface LinkBackend {
   saveOrder(ids: string[]): Promise<void>;
 }
 
-const NOT_PERMITTED = 'You do not have permission to change links. Please sign in again.';
+const NOT_PERMITTED =
+  'The database rejected the change. Check that supabase/migrations/002_public_editing.sql has been run.';
 
 function toLinkItem(row: LinkRow): LinkItem {
   return {
