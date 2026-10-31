@@ -88,7 +88,8 @@ const safeHref = computed(() => (/^https?:\/\//i.test(props.link.url) ? props.li
 .link-title {
   margin: 0 0 0.75rem 0;
   color: var(--color-heading);
-  font-size: 1.5rem;
+  font-size: clamp(1.25rem, 4vw, 1.5rem);
+  overflow-wrap: anywhere;
   /* Keep the title clear of the action buttons */
   padding-right: 4.5rem;
 }

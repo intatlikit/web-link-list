@@ -12,8 +12,8 @@ defineProps<{
 
 <style scoped>
 .app-footer {
-  margin-top: 4rem;
-  padding: 2rem;
+  margin-top: clamp(2.5rem, 6vw, 4rem);
+  padding: 2rem 0;
   color: var(--color-subtle);
   border-top: 1px solid var(--color-border);
   text-align: center;

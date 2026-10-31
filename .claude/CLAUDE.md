@@ -35,14 +35,14 @@ src/
 │   ├── search/SearchBar.vue
 │   ├── links/                   # LinkGrid (sortable), LinkCard, LinkForm
 │   ├── states/                  # LoadingState, ErrorState, EmptyState
-│   ├── common/                  # FloatingActionButton, AlertBanner
+│   ├── common/                  # ClearableInput, SelectInput, FloatingActionButton, AlertBanner
 │   └── icons/                   # SVG icons (currentColor)
 ├── composables/                 # useLinks, useLinkSearch
 ├── services/
 │   ├── linkService.ts           # create/update/reorder + คำนวณตำแหน่ง
 │   └── linkBackends.ts          # Supabase backend / localStorage backend
 ├── lib/                         # supabase client, errors
-├── assets/                      # main.css (theme tokens, .card-grid), form.css
+├── assets/main.css              # theme tokens (CSS vars), .card-grid
 ├── data/links.ts                # seed สำหรับ local mode
 └── types.ts                     # LinkItem, LinkInput, LinkRow
 supabase/migrations/             # 001 ตาราง+RLS อ่าน+seed, 002 public insert/update + constraints + reorder_links()
@@ -66,7 +66,15 @@ supabase/migrations/             # 001 ตาราง+RLS อ่าน+seed, 00
 - แยกหน้าที่ชัดเจน: **views** ประกอบหน้า/จัดการ navigation, **components** แสดงผล (รับ props / emit event), **composables** เก็บ state, **services** ติดต่อข้อมูล
 - Component ห้ามเรียก Supabase ตรง ๆ — ผ่าน `services/linkService.ts` เสมอ
 - สีใช้ CSS variables จาก `main.css` เท่านั้น ไม่ hard-code สีใน component
-- UI ต้องใช้ได้ทั้งมือถือและเดสก์ท็อป: touch target ≥ 40px, input font-size ≥ 16px, drag handle ต้องมี `touch-action: none`
+- UI ต้องใช้ได้ทั้งมือถือและเดสก์ท็อป: touch target ≥ 36–44px, input font-size ≥ 16px, drag handle ต้องมี `touch-action: none`, ใช้ `clamp()`/`min()` แทนขนาดตายตัว และเช็คที่ความกว้าง 320px ว่าไม่ล้นแนวนอน
+
+### กฎฟอร์ม (บังคับ)
+
+- **ช่องกรอกข้อความทุกช่องต้องมีปุ่ม ✕ ล้างข้อความเสมอ** → ใช้ `components/common/ClearableInput.vue` (รองรับ `multiline` สำหรับ textarea และ `variant="pill"`) ห้ามใช้ `<input>` / `<textarea>` แบบข้อความตรง ๆ
+  - ปุ่ม ✕ แสดงเมื่อช่องมีข้อความ, กดแล้วล้างค่าและ focus กลับที่ช่อง
+  - ยกเว้นเฉพาะ input ที่ไม่ใช่ข้อความ (checkbox, radio, file ฯลฯ)
+- **Dropdown ทุกตัวใช้ `components/common/SelectInput.vue`** (ลูกศร custom ตรงกลางแนวตั้ง, ข้อความยาวตัดเป็น …) ห้ามใช้ `<select>` เปล่า
+- Dropdown ลำดับ: ตัวเลือก **"At the end"** อยู่บนสุด ไม่มีเลขลำดับ และเป็นค่าเริ่มต้นเมื่อเพิ่ม item ใหม่ (ตอนแก้ไขค่าเริ่มต้นคือตำแหน่งปัจจุบัน เพื่อไม่ให้ item ย้ายโดยไม่ตั้งใจ)
 - ลิงก์ภายนอกต้องมี `target="_blank"` และ `rel="noopener noreferrer"`
 - TS ใช้ single quote + semicolon, import type ด้วย `import type`
 

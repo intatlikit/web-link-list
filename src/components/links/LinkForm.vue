@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import ClearableInput from '../common/ClearableInput.vue';
+import SelectInput from '../common/SelectInput.vue';
 import type { LinkInput, LinkItem } from '../../types';
 
 const props = defineProps<{
@@ -7,7 +9,7 @@ const props = defineProps<{
   others: LinkItem[];
   /** Existing values when editing. */
   initial?: LinkInput;
-  /** 1-based position to preselect; defaults to the end of the list. */
+  /** 1-based current position when editing; when omitted the default is the end. */
   initialPosition?: number;
   submitLabel: string;
   saving?: boolean;
@@ -19,20 +21,25 @@ const emit = defineEmits<{
   cancel: [];
 }>();
 
+const endPosition = computed(() => props.others.length + 1);
+
 const title = ref(props.initial?.title ?? '');
 const url = ref(props.initial?.url ?? '');
 const description = ref(props.initial?.description ?? '');
-const position = ref(props.initialPosition ?? props.others.length + 1);
+const position = ref(props.initialPosition ?? endPosition.value);
 
-const positionOptions = computed(() =>
-  Array.from({ length: props.others.length + 1 }, (_, index) => {
-    const value = index + 1;
-    const next = props.others[index];
-    let label = next ? `${value}. Before "${next.title}"` : `${value}. At the end`;
-    if (value === props.initialPosition) label += ' (current)';
-    return { value, label };
-  })
-);
+// "At the end" comes first (unnumbered) since it is the default when adding.
+const positionOptions = computed(() => {
+  const mark = (value: number, label: string) =>
+    value === props.initialPosition ? `${label} (current)` : label;
+  return [
+    { value: endPosition.value, label: mark(endPosition.value, 'At the end') },
+    ...props.others.map((item, index) => ({
+      value: index + 1,
+      label: mark(index + 1, `${index + 1}. Before "${item.title}"`),
+    })),
+  ];
+});
 
 function handleSubmit() {
   emit(
@@ -54,21 +61,19 @@ function handleSubmit() {
   >
     <label class="form-field">
       <span class="form-label">Title</span>
-      <input
+      <ClearableInput
         v-model="title"
-        class="form-control"
         type="text"
         required
         maxlength="100"
         placeholder="e.g. Loan Calculator"
-      >
+      />
     </label>
 
     <label class="form-field">
       <span class="form-label">URL</span>
-      <input
+      <ClearableInput
         v-model="url"
-        class="form-control"
         type="url"
         required
         maxlength="2000"
@@ -76,14 +81,14 @@ function handleSubmit() {
         title="Must start with http:// or https://"
         inputmode="url"
         placeholder="https://example.com"
-      >
+      />
     </label>
 
     <label class="form-field">
       <span class="form-label">Description <span class="form-hint">(optional)</span></span>
-      <textarea
+      <ClearableInput
         v-model="description"
-        class="form-control"
+        multiline
         rows="3"
         maxlength="300"
         placeholder="What is this tool for?"
@@ -92,19 +97,14 @@ function handleSubmit() {
 
     <label class="form-field">
       <span class="form-label">Position</span>
-      <select
-        v-model.number="position"
-        class="form-control"
-      >
-        <option
-          v-for="option in positionOptions"
-          :key="option.value"
-          :value="option.value"
-        >
-          {{ option.label }}
-        </option>
-      </select>
-      <span class="form-hint">Leave as is to keep the default. You can also drag cards on the home page.</span>
+      <SelectInput
+        v-model="position"
+        :options="positionOptions"
+      />
+      <span class="form-hint">
+        {{ initialPosition ? 'Defaults to the current position.' : 'Defaults to the end of the list.' }}
+        You can also drag cards on the home page.
+      </span>
     </label>
 
     <p
@@ -135,4 +135,76 @@ function handleSubmit() {
   </form>
 </template>
 
-<style scoped src="../../assets/form.css"></style>
+<style scoped>
+.form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.form-label {
+  font-weight: 600;
+}
+
+.form-hint {
+  color: var(--color-muted);
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.form-error {
+  color: var(--color-error);
+  margin: 0;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.button {
+  padding: 0.7rem 1.5rem;
+  min-height: 44px;
+  font-size: 1rem;
+  font-family: inherit;
+  border-radius: 50px;
+  border: 1px solid var(--color-accent);
+  cursor: pointer;
+  transition: opacity 0.2s, background-color 0.2s;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.button-primary {
+  background-color: var(--color-accent);
+  color: hsl(0, 0%, 100%);
+}
+
+.button-secondary {
+  background: none;
+  color: var(--color-accent);
+}
+
+/* Phones: full-width buttons, primary action on top */
+@media (max-width: 480px) {
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .button {
+    width: 100%;
+  }
+}
+</style>

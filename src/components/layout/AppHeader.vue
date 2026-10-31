@@ -17,7 +17,7 @@ defineProps<{
 
 <style scoped>
 .app-header {
-  margin-bottom: 4rem;
+  margin-bottom: clamp(2rem, 6vw, 4rem);
   width: 100%;
   text-align: center;
 }
@@ -30,7 +30,7 @@ h1 {
 
 p {
   color: var(--color-muted);
-  font-size: 1.25rem;
+  font-size: clamp(1rem, 3vw, 1.25rem);
   max-width: 600px;
   margin: 0 auto;
 }

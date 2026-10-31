@@ -16,7 +16,7 @@ const appVersion = import.meta.env.VITE_APP_VERSION || 'local';
   max-width: 1200px;
   margin: 0 auto;
   /* Extra bottom space so the floating button never covers content */
-  padding: 4rem 2rem 7rem;
+  padding: clamp(2rem, 6vw, 4rem) clamp(1rem, 4vw, 2rem) 7rem;
   width: 100%;
   display: flex;
   flex-direction: column;
