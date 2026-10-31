@@ -1,5 +1,7 @@
-import { LinkItem } from '../types';
+import type { LinkItem } from '../types';
 
+// Local fallback used when Supabase env vars are not set (e.g. local dev).
+// The production source of truth is the Supabase `links` table.
 export const links: LinkItem[] = [
   {
     id: '1',

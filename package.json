@@ -5,28 +5,27 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "check": "npm run lint && tsc",
-    "build": "tsc && vite build",
+    "check": "npm run lint && npm run typecheck",
+    "typecheck": "vue-tsc --noEmit",
+    "build": "vue-tsc --noEmit && vite build",
     "build:check": "npm run check && npm run build",
     "preview": "vite preview",
     "preview:prod": "npm run build && vite preview",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint": "eslint . --ext .ts,.vue --report-unused-disable-directives --max-warnings 0",
     "skill:build": "mkdir -p .gemini/skills/git-conventional-commits && cp git-conventional-commits/SKILL.md .gemini/skills/git-conventional-commits/SKILL.md && cd git-conventional-commits && zip -FSr ../git-conventional-commits.skill assets references scripts SKILL.md"
   },
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "@supabase/supabase-js": "^2.45.0",
+    "vue": "^3.5.0"
   },
   "devDependencies": {
-    "@types/react": "^18.2.66",
-    "@types/react-dom": "^18.2.22",
-    "@typescript-eslint/eslint-plugin": "^7.2.0",
-    "@typescript-eslint/parser": "^7.2.0",
-    "@vitejs/plugin-react": "^4.2.1",
+    "@vitejs/plugin-vue": "^5.1.0",
+    "@vue/eslint-config-typescript": "^13.0.0",
+    "@vue/tsconfig": "^0.5.1",
     "eslint": "^8.57.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.6",
-    "typescript": "^5.2.2",
-    "vite": "^5.2.0"
+    "eslint-plugin-vue": "^9.28.0",
+    "typescript": "^5.5.0",
+    "vite": "^5.4.0",
+    "vue-tsc": "^2.1.0"
   }
 }

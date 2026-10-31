@@ -1,6 +1,6 @@
 # Intat's Hub
 
-A professional, curated link directory of personal tools and calculators. Built with **React**, **Vite**, and **TypeScript**.
+A professional, curated link directory of personal tools and calculators. Built with **Vue 3**, **Vite**, **TypeScript**, and **Supabase**.
 
 Live at: [https://intatlikit.github.io/web-link-list/](https://intatlikit.github.io/web-link-list/)
 
@@ -15,9 +15,12 @@ Live at: [https://intatlikit.github.io/web-link-list/](https://intatlikit.github
 
 ## 🛠 Project Structure
 
-- `src/data/links.ts`: The source of truth for all links and descriptions.
-- `src/components/LinkCard.tsx`: The reusable card component for link items.
-- `src/App.tsx`: Main application shell and layout.
+- `src/App.vue`: Main application shell; picks loading / error / empty / grid state.
+- `src/components/`: UI components grouped by role — `layout/` (header, footer), `search/` (search bar), `links/` (grid, card), `states/` (loading, error, empty).
+- `src/composables/useLinks.ts`: Loads links from the Supabase `links` table.
+- `src/lib/supabase.ts`: Supabase client configured from env vars.
+- `src/data/links.ts`: Local fallback data used when Supabase is not configured.
+- `supabase/schema.sql`: Table definition, RLS policy, and seed data.
 - `.github/workflows/deploy.yml`: Configuration for automated deployments.
 - `git-conventional-commits/SKILL.md`: Source file for the custom conventional commits developer skill.
 - `git-conventional-commits.skill`: Zipped package of the conventional commit skill configuration.
@@ -27,8 +30,10 @@ Live at: [https://intatlikit.github.io/web-link-list/](https://intatlikit.github
 ### Local Development
 ```bash
 npm install
+cp .env.example .env.local   # optional: fill in Supabase URL + anon key
 npm run dev
 ```
+Without `.env.local`, the app falls back to `src/data/links.ts`.
 Starts the development server at [http://localhost:5173/web-link-list/](http://localhost:5173/web-link-list/) with Hot Module Replacement (HMR).
 
 ### Quality Assurance (Auto-checked on Push)
@@ -66,3 +71,10 @@ This project is configured to use **GitHub Actions** for deployment. To enable i
 1. Go to **Settings > Pages** in your GitHub repository.
 2. Under **Build and deployment > Source**, select **GitHub Actions**.
 3. Pushing to the `main` branch will now automatically update the live site.
+
+### Supabase Setup
+1. Run `supabase/schema.sql` in the Supabase Dashboard SQL Editor.
+2. In **Settings > Secrets and variables > Actions**, add repository secrets:
+   - `SUPABASE_URL` — your project URL
+   - `SUPABASE_ANON_KEY` — the project's anon (public) key
+3. The deploy workflow passes them to the build as `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY`.

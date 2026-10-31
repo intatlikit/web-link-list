@@ -1,0 +1,65 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+
+  /* Theme tokens (dark default) */
+  --color-text: hsla(0, 0%, 100%, 0.87);
+  --color-heading: hsl(0, 0%, 100%);
+  --color-muted: hsl(0, 0%, 53%);
+  --color-subtle: hsl(0, 0%, 40%);
+  --color-description: hsl(0, 0%, 67%);
+  --color-bg: hsl(0, 0%, 14%);
+  --color-surface: hsl(0, 0%, 10%);
+  --color-surface-hover: hsl(0, 0%, 16%);
+  --color-border: hsl(0, 0%, 20%);
+  --color-card-border: transparent;
+  --color-accent: hsl(237, 100%, 70%);
+  --color-accent-ring: hsla(237, 100%, 70%, 0.2);
+  --color-error: hsl(0, 85%, 65%);
+  --shadow-card: 0 10px 20px hsla(0, 0%, 0%, 0.3);
+
+  color: var(--color-text);
+  background-color: var(--color-bg);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-text: hsl(208, 35%, 20%);
+    --color-heading: hsl(208, 35%, 20%);
+    --color-muted: hsl(0, 0%, 53%);
+    --color-subtle: hsl(0, 0%, 60%);
+    --color-description: hsl(0, 0%, 40%);
+    --color-bg: hsl(0, 0%, 100%);
+    --color-surface: hsl(0, 0%, 98%);
+    --color-surface-hover: hsl(0, 0%, 94%);
+    --color-border: hsl(0, 0%, 87%);
+    --color-card-border: hsl(0, 0%, 87%);
+    --color-error: hsl(0, 70%, 50%);
+  }
+}
+
+body {
+  margin: 0;
+  display: block;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+/* Shared grid used by LinkGrid and LoadingState */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2.5rem;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  justify-content: center;
+}
